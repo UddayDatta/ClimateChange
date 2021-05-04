@@ -47,7 +47,7 @@ The analysis will show the link between the rise in annual temperature with the 
 
 1. Data used for this study is listed here. [https://www.kaggle.com/somesh24/sea-level-change](	https://www.kaggle.com/somesh24/sea-level-change)
 
-2. [•	https://www.kaggle.com/vageeshabudanur/riseintemp-dataset](	https://www.kaggle.com/vageeshabudanur/riseintemp-dataset )
+2. [https://www.kaggle.com/vageeshabudanur/riseintemp-dataset](	https://www.kaggle.com/vageeshabudanur/riseintemp-dataset )
 
 3. [https://www.kaggle.com/redikod/historical-rainfall-data-in-bangladesh ](https://www.kaggle.com/redikod/historical-rainfall-data-in-bangladesh)
 
