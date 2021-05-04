@@ -1,0 +1,117 @@
+---
+title: "Temperature-density distribution"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: false
+    toc_depth: 1
+    #code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache = TRUE)
+```
+
+
+# Month-wise change in temperature 
+
+We can see that the temperature has been steadily rising across years.
+
+```{r}
+climate_change <- read.csv(file = "Weather Data Bangladesh (1948 - 2013).csv",TRUE, sep = ",", stringsAsFactors = FALSE)
+
+library(ggplot2)
+library(plotly)
+
+Min_t2 <- ggplot(climate_change, aes(as.factor(Month), Min.Temp)) + 
+  geom_point(aes(color = as.factor(YEAR))) + 
+  geom_line(aes(group = as.factor(YEAR), 
+                color = as.factor(YEAR)), 
+            alpha = 0.7) + 
+  labs(title = 'Minimum Temperature by month') +
+  xlab("Months") +
+  ylab("Temperature") +
+  theme(axis.text.x = element_text(size = 6,angle = 90,hjust = 0.5, vjust = 0.5))
+# theme(legend.position = "none")
+ggplotly(Min_t2)
+
+
+Max_t2 <- ggplot(climate_change, aes(as.factor(Month), Max.Temp)) + 
+  geom_point(aes(color = as.factor(YEAR))) + 
+  geom_line(aes(group = as.factor(YEAR), 
+                color = as.factor(YEAR)), 
+            alpha = 0.7) + 
+  labs(title = 'Maximum Temperature by month') +
+  xlab("Months") +
+  ylab("Temperature") +
+  theme(axis.text.x = element_text(size = 6,angle = 90,hjust = 0.5, vjust = 0.5))
+# theme(legend.position = "none")
+ggplotly(Max_t2)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Temperature-density distribution
+
+As previous plot was a little bit crowded, ‘Temperature-density’ distribution plot was created.
+From the Temperature-density distribution, we can see how the minimum temperature has increase suggesting a higher overall temperature aiding to increased evaporation rate and chances of heavy rain.
+
+```{r}
+library(ggridges)
+
+Min_t3 <- ggplot(climate_change, aes(x = Min.Temp, y = as.factor(YEAR))) + 
+  geom_density_ridges_gradient(aes(fill = ..x..), 
+                               scale = 3, size = 0.3, alpha = 0.5) +
+  scale_fill_gradientn(colours = c("#0D0887FF", "#CC4678FF", "#F0F921FF"),
+                       name = "Temp") +
+  labs(title = 'Minimum Temperature density') + 
+  theme(legend.position = c(0.9,0.2)) +
+  xlab("Temperature") + 
+  ylab("Year")+theme_minimal(base_size = 10)
+
+plot(Min_t3)
+
+
+
+Max_t3 <- ggplot(climate_change, aes(x = Max.Temp, y = as.factor(YEAR))) + 
+  geom_density_ridges_gradient(aes(fill = ..x..), 
+                               scale = 3, size = 0.3, alpha = 0.5) +
+  scale_fill_gradientn(colours = c("#0D0887FF", "#CC4678FF", "#F0F921FF"),
+                       name = "Temp") +
+  labs(title = 'Maximum Temperature density') + 
+  theme(legend.position = c(0.9,0.2)) +
+  xlab("Temperature") + 
+  ylab("Year")+theme_minimal(base_size = 10)
+
+plot(Max_t3)
+
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+# Changing temperature trends
+
+From the changing temperature trends, it can be observed that most of the hottest years were in last few decades. 
+The minimum temperature also did not go below 10 degree Celsius a lot during this time.
+
+```{r}
+Min_t4 <- ggplot(data = climate_change, 
+       mapping = aes(x =Min.Temp,
+                     xend=Min.Temp,
+                     y = reorder(YEAR,Min.Temp))) + geom_dotplot( 
+                       aes(fill = ..x..)) +  scale_fill_gradient(
+                         low = "yellow",high = "red") +
+  labs(title = 'Changing Temperature Trends')
+
+plot(Min_t4)
+
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+

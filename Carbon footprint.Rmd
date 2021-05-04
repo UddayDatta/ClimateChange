@@ -1,0 +1,99 @@
+---
+title: "Carbon footprint"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: false
+    toc_depth: 1
+    #code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache = TRUE)
+```
+
+
+# **Carbon footprint and economic status of a country**
+
+Impacts of Climate Change disproportionately burdening developing countries. Most of the developing countries have a lower carbon footprint, but they are facing the worst impact of global warming. Bangladesh is also not an exception. 
+
+
+```{r}
+#Install all library
+library(dplyr) # provides a set of tools for efficiently manipulating data sets in R
+library(ggplot2) # data visualization package
+library(plotly) # provides online graphing, analytics, and statistics tools 
+library("RColorBrewer") #color palettes
+library(choroplethrZip) # for regional map of Bangladesh
+library(choroplethr)
+library(choroplethrAdmin1)
+library(choroplethrMaps)
+library(ggthemes)
+
+# Carbon footprint and economic status of a country
+library(tmap)
+data(World, metro, land)
+```
+
+
+# World population distribution
+
+Most of the world population lives near coastal areas.
+This makes a majority of population vulnerable to the impact of climate change.
+
+```{r}
+tm_shape(land) +
+  tm_raster("elevation", palette = terrain.colors(10)) +
+  tm_shape(World) +
+  tm_borders("white", lwd = .5) +
+  tm_text("iso_a3", size = "AREA") +
+  tm_shape(metro) +
+  tm_symbols(col = "red", size = "pop2020", scale = .5) +
+  tm_legend(show = FALSE)
+
+```
+
+# Impact of global warming
+
+Most of the developing countries have a lower carbon footprint,but they are facing the worst impact of global warming.
+
+```{r}
+tmap_mode("view")
+tm_shape(World) +
+  tm_polygons(c("footprint", "economy")) +
+  tm_facets(sync = TRUE, ncol = 2)
+
+
+# Bangladesh is also not an exception. 
+Bangladesh = subset(World, name == "Bangladesh")
+
+tmap_mode("view")
+tm_shape(Bangladesh) + 
+  tm_polygons(c("footprint", "economy")) +
+  tm_facets(sync = TRUE, ncol = 2)
+
+```
+
+# Administrative regions of Bangladesh
+
+Bangladesh is divided into seven administrative regions.
+
+```{r}
+data("admin1.map")
+
+bangladesh = subset(admin1.map, admin == "bangladesh")
+
+bd_map <- ggplot(bangladesh) + geom_polygon(aes(long, lat, fill= region, group = group), 
+                                color = "black") + theme_map() +  coord_fixed(1.1)+
+  ggtitle("Regional Map of Bangladesh")
+
+
+plot(bd_map)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+

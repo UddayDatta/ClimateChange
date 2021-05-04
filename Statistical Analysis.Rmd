@@ -1,0 +1,56 @@
+---
+title: "Statistical Analysis"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: false
+    toc_depth: 1
+    #code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache = TRUE)
+```
+
+
+# Linking increased rainfall with rising temperature
+
+From the graphs, it is clearly visible that increased rainfall intensity is directly linked with rising temperature. The change in minimum temperature has a greater impact. 
+
+```{r}
+climate_change <- read.csv(file = "Weather Data Bangladesh (1948 - 2013).csv",TRUE, sep = ",", stringsAsFactors = FALSE)
+
+library(ggplot2)
+library(plotly)
+
+library(ggiraph)
+library(ggiraphExtra)
+
+
+fit_max=lm(Max.Temp~Rainfall,data=climate_change)
+summary(fit_max)
+
+ggPredict(fit_max,se=TRUE,interactive=TRUE)
+
+
+fit_min=lm(Min.Temp~Rainfall,data=climate_change)
+summary(fit_min)
+
+ggPredict(fit_min,se=TRUE,interactive=TRUE)
+
+## From the graphs, it is clearly visible that increased rainfall intensity is directly linked with rising temperature. The change in minimum temperature has a greater impact. 
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# A Warming, Changing World
+
+Continuing the planet’s long-term warming trend, the year’s globally averaged temperature was 1.84 degrees Fahrenheit (1.02 degrees Celsius) warmer than the baseline 1951-1980 mean.
+In Bangladesh, all recent years after 2000 were hotter than average and almost all of them had higher rainfall intensity. 
+
+<a href = "https://www.nasa.gov/press-release/2020-tied-for-warmest-year-on-record-nasa-analysis-shows">
+![](images/tem&rain.png)
+

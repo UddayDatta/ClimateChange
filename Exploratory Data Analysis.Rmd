@@ -1,0 +1,114 @@
+---
+title: "EDA"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: false
+    toc_depth: 1
+    #code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache = TRUE)
+```
+
+
+# **Exploratory Data Analysis**
+
+The original data was modified to match the region name in the previous map. 
+All Station Names were converted to their region name.
+
+```{r}
+climate_change <- read.csv(file = "Weather Data Bangladesh (1948 - 2013).csv",TRUE, sep = ",", stringsAsFactors = FALSE)
+
+str(climate_change)
+
+head(climate_change)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Weather station locatio
+### [Global Temperature Change](http://live4.bmd.gov.bd/)
+
+<a href = "http://live4.bmd.gov.bd/">
+![](images/station.png)
+
+# Change in RH
+
+From the bar plot, we can see temperature has increases in last few decades, also there is a sharp
+contrast in humidity change suggesting sudden heavy rain and extreme weather.
+
+```{r}
+library(ggplot2)
+library(plotly)
+
+climate_change_chart <- ggplot(climate_change, aes(x = YEAR , y = Relative.Humidity, fill = Max.Temp)) + 
+  xlab("Year") +
+  ylab("Relative Humidity") +
+  theme_minimal(base_size = 14) + scale_fill_viridis_c()
+
+barplot <- climate_change_chart +
+  geom_bar( position = "dodge", stat = "identity",color= "white")
+ggplotly(barplot)
+
+```
+
+# Change in rainfall intensity
+
+From the bar plot, we can see rainfall intensity has increases in last few decades
+
+```{r}
+climate_change_chart2 <- ggplot(climate_change, aes(x = YEAR ,  y = Rainfall , fill = Max.Temp )) + 
+  xlab("Year") +
+  ylab("Rainfall") +
+  theme_minimal(base_size = 14)+ scale_fill_viridis_c()
+
+barplot2 <- climate_change_chart2 +
+  geom_bar( position = "dodge", stat = "identity",color= "white")
+ggplotly(barplot2)
+
+```
+
+# Temperature change by region
+
+We can see the increase in temperature was relatively high in Dhaka Division
+As Dhaka is the capital, it has seen an intense urbanization in recent years aiding to the increased temperature.
+
+```{r}
+library(lubridate)
+# adding Year-Month variable as date
+climate_change_ymd <- climate_change %>%
+  mutate(year_month = ymd(paste(climate_change$YEAR, climate_change$Month, truncated = 1))) 
+
+
+Min_t1 <- ggplot(climate_change_ymd, aes(year_month, Min.Temp, color = region)) + 
+  geom_line() + 
+  geom_smooth(se=FALSE, linetype = "dotted") + 
+  labs(title = "Minimum Temperature (1949-2013)",
+       x = "Year", 
+       y = "Minimum Temperature") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplotly(Min_t1)
+
+
+
+Max_t1 <- ggplot(climate_change_ymd, aes(year_month, Max.Temp, color = region)) + 
+  geom_line() + 
+  geom_smooth(se=FALSE, linetype = "dotted") + 
+  labs(title = "Maximum Temperature (1949-2013)",
+       x = "Year", 
+       y = "Maximum Temperature") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplotly(Max_t1)
+
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+

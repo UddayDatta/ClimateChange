@@ -1,0 +1,15 @@
+base
+dplyr
+ggplot2
+plotly
+RColorBrewer
+choroplethrZip
+stringr
+XML
+acs
+choroplethr
+choroplethrAdmin1
+choroplethrMaps
+ggthemes
+tmap
+sf

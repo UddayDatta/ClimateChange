@@ -1,0 +1,372 @@
+---
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  word_document: default
+---
+# "R Project"
+
+* Author: "Udday Datta"
+
+* Date: "3/21/2021"
+
+* For the data source please check [this link](https://www.kaggle.com/emonreza/65-years-of-weather-data-bangladesh-preprocessed)
+
+# Narrative:
+* An overview of the context :
+Bangladesh is exceptionally vulnerable to the adverse effects of climate change. Due to over-exploitation of natural resources and burring of fossil fuel, the atmospheric composition of earth is changing and creating a greenhouse effect. Mean global temperature has risen more than 1.5 °C since the pre-industrial era. As the temperature continues to rise, it will create adverse climatic conditions such as sea level rise, higher temperatures, enhanced monsoon precipitation, and an increase in cyclone intensity, especially in countries with low elevations like Bangladesh. 
+
+
+# Intended outcomes: 
+The analysis will show the link between the rise in annual temperature with the changing rainfall intensity. It will also explore the changing temperature trends in different regions and visualize the adverse climatic events like heavy rainfall in Bangladesh.
+
+# Target for visualization:
++	Exploratory data analysis to find patterns and relationships in data.
++	Graphs to visualize rainfall intensity and relative humidity of Bangladesh from 1949 to 2013.
++	Graphs to visualize temperature variations in different regions of Bangladesh from 1949 to 2013.
++	Changing temperature trends in Bangladesh
++ Interactive graphs to link increased rainfall intensity with rising temperature.
+
+
+```{r}
+#Install all library
+library(dplyr) # provides a set of tools for efficiently manipulating data sets in R
+library(ggplot2) # data visualization package
+library(plotly) # provides online graphing, analytics, and statistics tools 
+library("RColorBrewer") #color palettes
+library(choroplethrZip) # for regional map of Bangladesh
+library(choroplethr)
+library(choroplethrAdmin1)
+library(choroplethrMaps)
+library(ggthemes)
+
+# Carbon footprint and economic status of a country
+library(tmap)
+data(World, metro, land)
+
+
+## Most of the world population lives near coastal areas.
+## This makes a majority of population vulnerable to the impact of climate change.
+
+tm_shape(land) +
+  tm_raster("elevation", palette = terrain.colors(10)) +
+  tm_shape(World) +
+  tm_borders("white", lwd = .5) +
+  tm_text("iso_a3", size = "AREA") +
+  tm_shape(metro) +
+  tm_symbols(col = "red", size = "pop2020", scale = .5) +
+  tm_legend(show = FALSE)
+
+## Most of the developing countries have a lower carbon footprint, 
+###but they are facing the worst impact of global warming. 
+
+tmap_mode("view")
+tm_shape(World) +
+  tm_polygons(c("footprint", "economy")) +
+  tm_facets(sync = TRUE, ncol = 2)
+
+
+# Bangladesh is also not an exception. 
+Bangladesh = subset(World, name == "Bangladesh")
+
+tmap_mode("view")
+tm_shape(Bangladesh) + 
+  tm_polygons(c("footprint", "economy")) +
+  tm_facets(sync = TRUE, ncol = 2)
+
+# Administrative regions of Bangladesh
+
+
+data("admin1.map")
+
+bangladesh = subset(admin1.map, admin == "bangladesh")
+
+bd_map <- ggplot(bangladesh) + geom_polygon(aes(long, lat, fill= region, group = group), 
+                                color = "black") + theme_map() +  coord_fixed(1.1)+
+  ggtitle("Regional Map of Bangladesh")
+
+
+plot(bd_map)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+
+```
+
+## loading dataset: 
+
+```{r}
+## The original data was modified to match the region name in the previous map. 
+## All Station Names were converted to their region name.
+
+
+climate_change <- read.csv(file = "Weather Data Bangladesh (1948 - 2013).csv",TRUE, sep = ",", stringsAsFactors = FALSE)
+
+str(climate_change)
+
+head(climate_change)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Exploratory Data Analysis (EDA)
+```{r}
+#Bar Plot
+
+climate_change_chart <- ggplot(climate_change, aes(x = YEAR , y = Relative.Humidity, fill = Max.Temp)) + 
+  xlab("Year") +
+  ylab("Relative Humidity") +
+  theme_minimal(base_size = 14) + scale_fill_viridis_c()
+
+barplot <- climate_change_chart +
+  geom_bar( position = "dodge", stat = "identity",color= "white")
+ggplotly(barplot)
+
+# From the bar plot, we can see temperature has increases in last few decades, also there is a sharp
+## contrast in humidity change suggesting sudden heavy rain and extreme weather. 
+
+
+climate_change_chart2 <- ggplot(climate_change, aes(x = YEAR ,  y = Rainfall , fill = Max.Temp )) + 
+  xlab("Year") +
+  ylab("Rainfall") +
+  theme_minimal(base_size = 14)+ scale_fill_viridis_c()
+
+barplot2 <- climate_change_chart2 +
+  geom_bar( position = "dodge", stat = "identity",color= "white")
+ggplotly(barplot2)
+
+# From the bar plot, we can see rainfall intensity has increases in last few decades
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Line Plot
+```{r}
+library(lubridate)
+# adding Year-Month variable as date
+climate_change_ymd <- climate_change %>%
+  mutate(year_month = ymd(paste(climate_change$YEAR, climate_change$Month, truncated = 1))) 
+
+
+Min_t1 <- ggplot(climate_change_ymd, aes(year_month, Min.Temp, color = region)) + 
+  geom_line() + 
+  geom_smooth(se=FALSE, linetype = "dotted") + 
+  labs(title = "Minimum Temperature (1949-2013)",
+       x = "Year", 
+       y = "Minimum Temperature") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplotly(Min_t1)
+
+
+
+Max_t1 <- ggplot(climate_change_ymd, aes(year_month, Max.Temp, color = region)) + 
+  geom_line() + 
+  geom_smooth(se=FALSE, linetype = "dotted") + 
+  labs(title = "Maximum Temperature (1949-2013)",
+       x = "Year", 
+       y = "Maximum Temperature") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplotly(Max_t1)
+
+## We can see the increase in temperature was relatively high in Dhaka Division
+## As Dhaka is the capital, it has seen an intense urbanization in recent years aiding to the increased temperature. 
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+
+
+## Temperature Month-wise plot for each year in data
+ 
+```{r}
+Min_t2 <- ggplot(climate_change, aes(as.factor(Month), Min.Temp)) + 
+  geom_point(aes(color = as.factor(YEAR))) + 
+  geom_line(aes(group = as.factor(YEAR), 
+                color = as.factor(YEAR)), 
+            alpha = 0.7) + 
+  labs(title = 'Minimum Temperature by month') +
+  xlab("Months") +
+  ylab("Temperature") +
+  theme(axis.text.x = element_text(size = 6,angle = 90,hjust = 0.5, vjust = 0.5))
+# theme(legend.position = "none")
+ggplotly(Min_t2)
+
+
+Max_t2 <- ggplot(climate_change, aes(as.factor(Month), Max.Temp)) + 
+  geom_point(aes(color = as.factor(YEAR))) + 
+  geom_line(aes(group = as.factor(YEAR), 
+                color = as.factor(YEAR)), 
+            alpha = 0.7) + 
+  labs(title = 'Maximum Temperature by month') +
+  xlab("Months") +
+  ylab("Temperature") +
+  theme(axis.text.x = element_text(size = 6,angle = 90,hjust = 0.5, vjust = 0.5))
+# theme(legend.position = "none")
+ggplotly(Max_t2)
+
+# We can see that the temperature has been steadily rising across years but this plot is little bit crowded, 
+# so a ‘Temperature-density’ distribution plot was created.
+
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+## Temperature-density distribution
+```{r}
+library(ggridges)
+
+Min_t3 <- ggplot(climate_change, aes(x = Min.Temp, y = as.factor(YEAR))) + 
+  geom_density_ridges_gradient(aes(fill = ..x..), 
+                               scale = 3, size = 0.3, alpha = 0.5) +
+  scale_fill_gradientn(colours = c("#0D0887FF", "#CC4678FF", "#F0F921FF"),
+                       name = "Temp") +
+  labs(title = 'Minimum Temperature density') + 
+  theme(legend.position = c(0.9,0.2)) +
+  xlab("Temperature") + 
+  ylab("Year")+theme_minimal(base_size = 10)
+
+plot(Min_t3)
+
+
+
+Max_t3 <- ggplot(climate_change, aes(x = Max.Temp, y = as.factor(YEAR))) + 
+  geom_density_ridges_gradient(aes(fill = ..x..), 
+                               scale = 3, size = 0.3, alpha = 0.5) +
+  scale_fill_gradientn(colours = c("#0D0887FF", "#CC4678FF", "#F0F921FF"),
+                       name = "Temp") +
+  labs(title = 'Maximum Temperature density') + 
+  theme(legend.position = c(0.9,0.2)) +
+  xlab("Temperature") + 
+  ylab("Year")+theme_minimal(base_size = 10)
+
+plot(Max_t3)
+
+## From the Temperature-density distribution, we can see how the minimum temperature has increase suggesting a higher overall temperature aiding to increased evaporation rate and chances of heavy rain. 
+
+Min_t4 <- ggplot(data = climate_change, 
+       mapping = aes(x =Min.Temp,
+                     xend=Min.Temp,
+                     y = reorder(YEAR,Min.Temp))) + geom_dotplot( 
+                       aes(fill = ..x..)) +  scale_fill_gradient(
+                         low = "yellow",high = "red") +
+  labs(title = 'Changing Temperature Trends')
+
+plot(Min_t4)
+
+
+
+## From the changing temperature trends, it can be observed that most of the hottest years were in last few decades. The minimum temperature also did not go below 10 degree Celsius a lot during this time.
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Statistical Analysis
+## Linking increased rainfall with rising temperature
+
+```{r}
+library(ggiraph)
+library(ggiraphExtra)
+
+
+fit_max=lm(Max.Temp~Rainfall,data=climate_change)
+summary(fit_max)
+
+ggPredict(fit_max,se=TRUE,interactive=TRUE)
+
+
+fit_min=lm(Min.Temp~Rainfall,data=climate_change)
+summary(fit_min)
+
+ggPredict(fit_min,se=TRUE,interactive=TRUE)
+
+## From the graphs, it is clearly visible that increased rainfall intensity is directly linked with rising temperature. The change in minimum temperature has a greater impact. 
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Animation
+## The changing climate and its impact on rain intensity is explained through this animation
+
+```{r}
+library(gganimate)
+library(magick)
+
+Animation1 <- ggplot(climate_change, aes(YEAR, Rainfall, size = Min.Temp, colour = Month, group = Month)) + 
+  geom_point(alpha = 0.2, show.legend = FALSE) +
+  facet_wrap(~Month) +
+  labs(title = 'Year: {frame_time}', x = 'Year', y = 'Rainfall') +
+  transition_time(YEAR) +
+  ease_aes('linear')
+
+animate(Animation1, height = 500, width= 500, fps = 25, duration = 8, 
+        end_pause = 20, res = 100, renderer = magick_renderer())
+
+anim_save("rain1.gif")
+
+## The changing climate and its impact on rain intensity is explained through this animation. The change in rain intensity is visualized throughout the monthly change in rainfall from year 1949 to 2013. 
+
+p <- ggplot(climate_change, aes(x = YEAR, y = Rainfall, color = Month, group = Month)) +
+  geom_path() +
+  geom_point() +
+  facet_wrap(~ Month) +
+  theme(legend.position = 'none') +
+  labs(title = ' Rainfall Variation, Year: {frame_along}') +
+  transition_reveal(along = YEAR) +
+  ease_aes('linear')
+
+animate(p, height = 500, width= 500, fps = 25, duration = 8, 
+        end_pause = 20, res = 100, renderer = magick_renderer())
+
+anim_save("rain2.gif")
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+## Conclusion
+
+* From the animation, it is observed that rainfall has increased a lot from April to July. The high frequency of rain in September can also be noticed. To summarize, we can say that the changing climate and increase in temperature (especially increase in minimum temperature) has a profound impact on increase in rainfall intensity. Due to this sudden increase in rain intensity coupled with rising sea levels, Bangladesh has seen a rise in frequent floods both in internal and coastal parts of the country. 
+
+
+## Reference 
+* Basak, J. K., Titumir, R. A. M., & Dey, N. C. (2013). Climate change in Bangladesh: a historical analysis of temperature and rainfall data. Journal of Environment, 2(2), 41-46.
+* Huq, S. (2001). Climate change and Bangladesh. Science, 294(5547), 1617-1618.
+* Huq, S., Karim, Z., & Asaduzzaman, M. (1999). Vulnerability and adaptation to climate change for Bangladesh.
+* Mahmood, S. A. I. (2012). Impact of climate change in Bangladesh: The role of public administration and government’s integrity. Journal of Ecology and the Natural Environment, 4(8), 223-240.
+* Shahid, S. (2010). Recent trends in the climate of Bangladesh. Climate Research, 42(3), 185-193.
+* Shahid, S. (2011). Trends in extreme rainfall events of Bangladesh. Theoretical and applied climatology, 104(3), 489-499.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

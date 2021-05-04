@@ -1,0 +1,72 @@
+---
+title: "Changing Trends"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: false
+    toc_depth: 1
+    #code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache = TRUE)
+```
+
+# Regional trends
+
+In all regions of Bangladesh, the temperature has increase and there has been a shift in overall climate pattern. 
+As rainfall intensity increased, there has been more rain in the month of July-September than usual.  
+
+![](images/region.png)
+
+
+# Animation
+
+The changing climate and its impact on rain intensity is explained through this animation. 
+The change in rain intensity is visualized throughout the monthly change in rainfall from year 1949 to 2013. 
+
+```{r}
+climate_change <- read.csv(file = "Weather Data Bangladesh (1948 - 2013).csv",TRUE, sep = ",", stringsAsFactors = FALSE)
+
+library(ggplot2)
+library(plotly)
+
+library(gganimate)
+library(magick)
+
+Animation1 <- ggplot(climate_change, aes(YEAR, Rainfall, size = Min.Temp, colour = Month, group = Month)) + 
+  geom_point(alpha = 0.2, show.legend = FALSE) +
+  facet_wrap(~Month) +
+  labs(title = 'Year: {frame_time}', x = 'Year', y = 'Rainfall') +
+  transition_time(YEAR) +
+  ease_aes('linear')
+
+animate(Animation1, height = 500, width= 500, fps = 25, duration = 8, 
+        end_pause = 20, res = 100, renderer = magick_renderer())
+
+anim_save("rain1.gif")
+
+## The changing climate and its impact on rain intensity is explained through this animation. The change in rain intensity is visualized throughout the monthly change in rainfall from year 1949 to 2013. 
+
+p <- ggplot(climate_change, aes(x = YEAR, y = Rainfall, color = Month, group = Month)) +
+  geom_path() +
+  geom_point() +
+  facet_wrap(~ Month) +
+  theme(legend.position = 'none') +
+  labs(title = ' Rainfall Variation, Year: {frame_along}') +
+  transition_reveal(along = YEAR) +
+  ease_aes('linear')
+
+animate(p, height = 500, width= 500, fps = 25, duration = 8, 
+        end_pause = 20, res = 100, renderer = magick_renderer())
+
+anim_save("rain2.gif")
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
