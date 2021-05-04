@@ -21,7 +21,11 @@ output: html_document
 
 
 
-The rising sea level is one of the major consequences of climate change. The melting ice caps and receding glaciers are contributing to this sea-level rise. Mean global temperature has risen more than 1.5 °C since the pre-industrial era. As the temperature continues to rise, it will create adverse climatic conditions, especially in countries with low elevations like Bangladesh. 
+The rising sea level is one of the major consequences of climate change. 
+The melting ice caps and receding glaciers are contributing to this sea-level rise. Mean global temperature has risen more than 1.5 °C since the pre-industrial era. 
+As the temperature continues to rise, it will create adverse climatic conditions, especially in countries with low elevations like Bangladesh. 
+
+
 Intended outcomes: 
 The analysis will show the link between the global rise in annual temperature with the changing sea levels. It will also explore how global rise in temperature has increased adverse climatic events like heavy rainfall and droughts in Bangladesh.
 

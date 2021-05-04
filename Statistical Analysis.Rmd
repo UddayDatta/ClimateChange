@@ -15,7 +15,7 @@ knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache = TRUE)
 ```
 
 
-# Linking increased rainfall with rising temperature
+# Linking rainfall with temperature
 
 From the graphs, it is clearly visible that increased rainfall intensity is directly linked with rising temperature. The change in minimum temperature has a greater impact. 
 

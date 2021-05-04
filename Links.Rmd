@@ -22,5 +22,5 @@ Shahid, S. (2010). Recent trends in the climate of Bangladesh. Climate Research,
 Shahid, S. (2011). Trends in extreme rainfall events of Bangladesh. Theoretical and applied climatology, 104(3), 489-499.
 
 
-# ShinyApp Link
+# ShinyApp
 ### [https://uddaydatta.shinyapps.io/Changing_Weather/](https://uddaydatta.shinyapps.io/Changing_Weather/)

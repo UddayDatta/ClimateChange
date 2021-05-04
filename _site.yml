@@ -1,11 +1,19 @@
-name: "MyLabJournal"
+name: "Impact of Climate change in Weather Pattern"
 navbar:
-  title: "MyLabJournal"
+  title: "Impact of Climate change in Weather Pattern"
   left:
     - text: "Home"
       href: index.html
-    - text: "Journal"
-      href: Journal.html
+    - text: "Carbon footprint"
+      href: Carbon-footprint.html
+    - text: "EDA"
+      href: Exploratory-Data-Analysis.html
+    - text: "Temperature-density distribution"
+      href: Temperature-density-distribution.html
+    - text: "Statistical Analysis"
+      href: Statistical-Analysis.html
+    - text: "Changing Trends"
+      href: Changing-Trends.html
     - text: "Links"
       href: Links.html
 output_dir: "docs"

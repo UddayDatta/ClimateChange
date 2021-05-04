@@ -11,11 +11,11 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache = TRUE)
+knitr::opts_chunk$set(message=FALSE,warning=FALSE)
 ```
 
 
-# **Carbon footprint and economic status of a country**
+# Carbon footprint and economy
 
 Impacts of Climate Change disproportionately burdening developing countries. Most of the developing countries have a lower carbon footprint, but they are facing the worst impact of global warming. Bangladesh is also not an exception. 
 

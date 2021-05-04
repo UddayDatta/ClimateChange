@@ -15,7 +15,7 @@ knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache = TRUE)
 ```
 
 
-# **Exploratory Data Analysis**
+# Exploratory Data Analysis
 
 The original data was modified to match the region name in the previous map. 
 All Station Names were converted to their region name.
@@ -31,7 +31,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Weather station locatio
-### [Global Temperature Change](http://live4.bmd.gov.bd/)
 
 <a href = "http://live4.bmd.gov.bd/">
 ![](images/station.png)

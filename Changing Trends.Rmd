@@ -14,7 +14,7 @@ output:
 knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache = TRUE)
 ```
 
-# Regional trends
+# Regional rainfall trends
 
 In all regions of Bangladesh, the temperature has increase and there has been a shift in overall climate pattern. 
 As rainfall intensity increased, there has been more rain in the month of July-September than usual.  
